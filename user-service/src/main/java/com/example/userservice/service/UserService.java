@@ -1,4 +1,10 @@
-package com.example.userservice.service.impl;
+package com.example.userservice.service;
+
+import com.example.userservice.dto.UserCreateDTO;
+import com.example.userservice.dto.UserDetailDTO;
+import com.example.userservice.dto.UserSummaryDTO;
+
+import java.util.List;
 
 public interface UserService {
 
