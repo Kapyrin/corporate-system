@@ -4,19 +4,19 @@ import com.example.userservice.dto.UserCreateDTO;
 import com.example.userservice.dto.UserDetailDTO;
 import com.example.userservice.dto.UserSummaryDTO;
 import com.example.userservice.entity.User;
-import com.example.userservice.mapper.UserMapperImplementation;
+import com.example.userservice.mapper.UserMapper;
 import com.example.userservice.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class UserServiceImplementation implements UserService {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private UserMapperImplementation userMapper;
+
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
     public UserDetailDTO createUser(UserCreateDTO userDto) {
@@ -25,7 +25,7 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public UserDetailDTO getUserById(Long id) {
-        return userMapper.toDetailDto(userRepository.findById(id).orElse(new User()));
+        return userMapper.toDetailDto(userRepository.findById(id).orElseThrow(RuntimeException::new));
     }
 
     @Override

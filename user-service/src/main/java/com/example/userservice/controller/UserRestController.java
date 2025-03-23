@@ -27,19 +27,13 @@ public class UserRestController {
     }
 
     @PostMapping("/users")
-    public UserDetailDTO createUser(@RequestBody User user) {
-        UserCreateDTO createDTO = new UserCreateDTO();
-        createDTO.setName(user.getName());
-        createDTO.setEmail(user.getEmail());
-        return userService.createUser(createDTO);
+    public UserDetailDTO createUser(@RequestBody UserCreateDTO userCreateDTO) {
+        return userService.createUser(userCreateDTO);
     }
 
-    @PutMapping("/users")
-    public UserDetailDTO updateUser(@RequestBody User user) {
-        UserCreateDTO createDTO = new UserCreateDTO();
-        createDTO.setName(user.getName());
-        createDTO.setEmail(user.getEmail());
-        return userService.updateUser(user.getId(), createDTO);
+    @PutMapping("/users/{id}")
+    public UserDetailDTO updateUser(@PathVariable("id") Long id, @RequestBody UserCreateDTO userCreateDTO) {
+        return userService.updateUser(id, userCreateDTO);
     }
 
     @DeleteMapping("/users/{id}")
