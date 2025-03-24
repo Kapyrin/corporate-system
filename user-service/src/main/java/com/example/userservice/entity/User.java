@@ -39,7 +39,7 @@ public class User {
 
     @PrePersist
     public void prePersist() {
-        this.createdAt = LocalDateTime.now(); // без этого возращет null в таймстеп так hibernate не знает что база что-то установила оставляет null
+        this.createdAt = LocalDateTime.now();
     }
 
 }
