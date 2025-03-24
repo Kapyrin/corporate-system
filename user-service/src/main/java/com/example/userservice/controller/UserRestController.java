@@ -3,13 +3,11 @@ package com.example.userservice.controller;
 import com.example.userservice.dto.UserCreateDTO;
 import com.example.userservice.dto.UserDetailDTO;
 import com.example.userservice.dto.UserSummaryDTO;
-import com.example.userservice.entity.User;
 import com.example.userservice.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
