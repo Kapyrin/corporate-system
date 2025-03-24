@@ -1,4 +1,4 @@
-package com.example.userservice.service;
+package com.example.userservice.service.impl;
 
 import com.example.userservice.dto.UserCreateDTO;
 import com.example.userservice.dto.UserDetailDTO;
@@ -8,6 +8,7 @@ import com.example.userservice.exception.UserAlreadyExistsException;
 import com.example.userservice.exception.UserNotFoundException;
 import com.example.userservice.mapper.UserMapper;
 import com.example.userservice.repository.UserRepository;
+import com.example.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
