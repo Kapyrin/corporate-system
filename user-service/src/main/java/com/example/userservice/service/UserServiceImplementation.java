@@ -35,9 +35,13 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public UserDetailDTO updateUser(Long id, UserCreateDTO userDto) {
-     //   User user = userMapper.toEntity(userDto);// ты здесь создаешь нового пользователя а не получаешь по id
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
+
+        if (userRepository.existsByEmail(userDto.getEmail()) &&
+                !existingUser.getEmail().equals(userDto.getEmail())) {
+            throw new UserAlreadyExistsException(userDto.getEmail());
+        }
 
         existingUser.setName(userDto.getName());
         existingUser.setEmail(userDto.getEmail());
@@ -45,6 +49,7 @@ public class UserServiceImplementation implements UserService {
         User updatedUser = userRepository.save(existingUser);
         return userMapper.toDetailDto(updatedUser);
     }
+
 
     @Override
     public void deleteUser(Long id) {
