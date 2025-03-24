@@ -66,6 +66,12 @@ public class UserServiceIntegrationTest {
         assertEquals(user1.getId(), result.getId());
         assertEquals(user1.getName(), result.getName());
         assertEquals(user1.getEmail(), result.getEmail());
+
+        UserDetailDTO result2 = userService.getUserById(user2.getId());
+
+        assertEquals(user2.getId(), result2.getId());
+        assertEquals(user2.getName(), result2.getName());
+        assertEquals(user2.getEmail(), result2.getEmail());
     }
 
     @Test
