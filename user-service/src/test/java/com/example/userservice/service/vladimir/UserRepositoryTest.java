@@ -85,4 +85,23 @@ class UserRepositoryTest {
         assertEquals("Vladimir", users.get(0).getName());
         assertEquals("vlad@mail.com", users.get(0).getEmail());
     }
+
+    @Test
+    @DisplayName("Should find user by email")
+    void findByEmailUser() {
+        Optional<User> result = userRepository.findByEmail("vlad@mail.com");
+
+        assertTrue(result.isPresent());
+        assertEquals("Vladimir", result.get().getName());
+        assertEquals("vlad@mail.com", result.get().getEmail());
+    }
+
+    @Test
+    @DisplayName("Should return empty when user not found by email")
+    void findByEmailUserNotFound() {
+        Optional<User> result = userRepository.findByEmail("unknown@mail.com");
+
+        assertTrue(result.isEmpty());
+    }
+
 }

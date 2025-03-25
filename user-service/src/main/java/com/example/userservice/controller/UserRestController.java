@@ -3,6 +3,7 @@ package com.example.userservice.controller;
 import com.example.userservice.dto.UserCreateDTO;
 import com.example.userservice.dto.UserDetailDTO;
 import com.example.userservice.dto.UserSummaryDTO;
+import com.example.userservice.exception.UserNotFoundException;
 import com.example.userservice.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -17,7 +18,6 @@ import java.util.List;
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserRestController {
-    //    @Autowired опять autowired
     private final UserService userService;
 
     @Operation(summary = "Get all users")
@@ -60,4 +60,14 @@ public class UserRestController {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "Get user by email")
+    @ApiResponse(responseCode = "200", description = "User found")
+    @ApiResponse(responseCode = "404", description = "User not found")
+    @GetMapping("/by-email")
+    public UserDetailDTO getUserByEmail(@RequestParam("email") String email) {
+        return userService.getUserByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException(email));
+    }
+
 }

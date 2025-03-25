@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -23,7 +24,7 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public UserDetailDTO createUser(UserCreateDTO userDto) {
-        if(userRepository.existsByEmail(userDto.getEmail())) {
+        if (userRepository.existsByEmail(userDto.getEmail())) {
             throw new UserAlreadyExistsException(userDto.getEmail());
         }
         return userMapper.toDetailDto(userRepository.save(userMapper.toEntity(userDto)));
@@ -63,5 +64,11 @@ public class UserServiceImplementation implements UserService {
     @Override
     public List<UserSummaryDTO> getAllUsers() {
         return userMapper.toSummaryDtoList(userRepository.findAll());
+    }
+
+    @Override
+    public Optional<UserDetailDTO> getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .map(userMapper::toDetailDto);
     }
 }

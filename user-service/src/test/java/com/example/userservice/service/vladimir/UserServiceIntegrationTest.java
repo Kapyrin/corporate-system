@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UserServiceIntegrationTest {
 
     private static final Long NON_EXISTENT_ID = 999L;
+    private static final String NON_EXISTING_EMAIL = "nonexistent@mail.com";
 
     @Autowired
     private UserService userService;
@@ -127,4 +129,24 @@ public class UserServiceIntegrationTest {
 
         assertTrue(users.isEmpty());
     }
+
+    @Test
+    void getUserByEmail_shouldReturnUserDetailDTO() {
+        Optional<UserDetailDTO> result = userService.getUserByEmail(user1.getEmail());
+
+        assertTrue(result.isPresent());
+
+        UserDetailDTO dto = result.get();
+        assertEquals(user1.getName(), dto.getName());
+        assertEquals(user1.getEmail(), dto.getEmail());
+        assertNotNull(dto.getCreatedAt());
+    }
+
+    @Test
+    void getUserByEmail_shouldReturnEmptyOptional_ifUserNotFound() {
+       Optional<UserDetailDTO> result = userService.getUserByEmail(NON_EXISTING_EMAIL);
+
+        assertTrue(result.isEmpty());
+    }
+
 }

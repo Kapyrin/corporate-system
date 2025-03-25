@@ -17,9 +17,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 
@@ -188,5 +188,36 @@ class UserServiceMockTest {
         verify(userRepository, times(1)).findAll();
         verify(userMapper, times(1)).toSummaryDtoList(emptyList);
     }
+
+    @Test
+    void getUserByEmail_shouldReturnUserDetailDTO_whenUserExists() {
+        String email = "vlad@mail.ru";
+        User user = new User(1L, "Vladimir", email, LocalDateTime.now());
+        UserDetailDTO dto = new UserDetailDTO(1L, "Vladimir", email, user.getCreatedAt());
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+        when(userMapper.toDetailDto(user)).thenReturn(dto);
+
+        Optional<UserDetailDTO> result = userService.getUserByEmail(email);
+
+        assertTrue(result.isPresent());
+        assertEquals(dto, result.get());
+
+        verify(userRepository).findByEmail(email);
+        verify(userMapper).toDetailDto(user);
+    }
+
+    @Test
+    void getUserByEmail_shouldReturnEmptyOptional_whenUserNotFound() {
+        String email = "unknown@mail.ru";
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        Optional<UserDetailDTO> result = userService.getUserByEmail(email);
+
+        assertTrue(result.isEmpty());
+        verify(userRepository).findByEmail(email);
+        verify(userMapper, never()).toDetailDto(any());
+    }
+
 
 }

@@ -95,4 +95,24 @@ class UserRestControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].email").value("test@example.com"));
     }
 
+    @Test
+    @DisplayName("GET /api/users/by-email - should return user by email")
+    void getUserByEmail_shouldReturnUser() throws Exception {
+        mockMvc.perform(get("/api/users/by-email")
+                        .param("email", savedUser.getEmail()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("TestUser"))
+                .andExpect(jsonPath("$.email").value("test@example.com"));
+    }
+
+    @Test
+    @DisplayName("GET /api/users/by-email - should return 404 if user not found")
+    void getUserByEmail_shouldReturnNotFound() throws Exception {
+        mockMvc.perform(get("/api/users/by-email")
+                        .param("email", "notfound@example.com"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error").value("User with email notfound@example.com was not found"))
+                .andExpect(jsonPath("$.status").value(404));
+    }
+
 }

@@ -5,6 +5,7 @@ import com.example.userservice.dto.UserDetailDTO;
 import com.example.userservice.dto.UserSummaryDTO;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
 
@@ -17,4 +18,5 @@ public interface UserService {
     void deleteUser(Long id);
 
     List<UserSummaryDTO> getAllUsers();
+    Optional<UserDetailDTO> getUserByEmail(String email);
 }

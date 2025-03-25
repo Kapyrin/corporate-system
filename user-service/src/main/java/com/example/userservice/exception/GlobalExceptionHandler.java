@@ -1,5 +1,6 @@
 package com.example.userservice.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -56,6 +57,17 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(422).body(errorMap);
     }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, Object>> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        Map<String, Object> errorMap = new HashMap<>();
+        errorMap.put("timestamp", LocalDateTime.now());
+        errorMap.put("error", "Email already exists (DB constraint violation)");
+        errorMap.put("status", 409);
+
+        return ResponseEntity.status(409).body(errorMap);
+    }
+
 
 
 }
