@@ -60,7 +60,7 @@ public class UserServiceMockitoTests {
 
         when(userRepository.existsByEmail(dto.getEmail())).thenReturn(true);
 
-        userService.createUser(dto);
+        assertThrows(UserAlreadyExistsException.class, () -> userService.createUser(dto));
 
         verify(userRepository, times(1)).existsByEmail(dto.getEmail());
         verify(userRepository, never()).save(any());
