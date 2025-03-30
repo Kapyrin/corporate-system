@@ -17,58 +17,45 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleException(Exception ex) {
-        Map<String, Object> errorMap = new HashMap<>();
-        errorMap.put("timestamp", LocalDateTime.now());
-        errorMap.put("error", ex.getMessage());
-        errorMap.put("status", 500);
-        return ResponseEntity.status(500).body(errorMap);
+        return ResponseEntity.status(500).body(createErrorResponse(ex.getMessage(), 500));
     }
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleUserNotFound(UserNotFoundException ex) {
-        Map<String, Object> errorMap = new HashMap<>();
-        errorMap.put("timestamp", LocalDateTime.now());
-        errorMap.put("error", ex.getMessage());
-        errorMap.put("status", 404);
-        return ResponseEntity.status(404).body(errorMap);
+        return ResponseEntity.status(404).body(createErrorResponse(ex.getMessage(), 404));
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<Map<String, Object>> handleUserAlreadyExist(UserAlreadyExistsException ex) {
-        Map<String, Object> errorMap = new HashMap<>();
-        errorMap.put("timestamp", LocalDateTime.now());
-        errorMap.put("error", ex.getMessage());
-        errorMap.put("status", 409);
-        return ResponseEntity.status(409).body(errorMap);
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleValidationException(MethodArgumentNotValidException ex) {
-        Map<String, Object> errorMap = new HashMap<>();
-        errorMap.put("timestamp", LocalDateTime.now());
-        errorMap.put("status", 422);
-
-        List<String> errors = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(er->er.getField()+ ": " + er.getDefaultMessage())
-                .collect(Collectors.toList());
-        errorMap.put("errors", errors);
-
-        return ResponseEntity.status(422).body(errorMap);
+    public ResponseEntity<Map<String, Object>> handleUserAlreadyExists(UserAlreadyExistsException ex) {
+        return ResponseEntity.status(409).body(createErrorResponse(ex.getMessage(), 409));
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Map<String, Object>> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
-        Map<String, Object> errorMap = new HashMap<>();
-        errorMap.put("timestamp", LocalDateTime.now());
-        errorMap.put("error", "Email already exists (DB constraint violation)");
-        errorMap.put("status", 409);
-
-        return ResponseEntity.status(409).body(errorMap);
+        return ResponseEntity.status(409).body(createErrorResponse("Database error: " + ex.getRootCause().getMessage(), 409));
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, Object>> handleValidationException(MethodArgumentNotValidException ex) {
+        List<String> errors = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .collect(Collectors.toList());
 
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("timestamp", LocalDateTime.now());
+        errorResponse.put("errors", errors);
+        errorResponse.put("status", 422);
 
+        return ResponseEntity.unprocessableEntity().body(errorResponse);
+    }
+
+    private Map<String, Object> createErrorResponse(String message, int status) {
+        Map<String, Object> errorMap = new HashMap<>();
+        errorMap.put("timestamp", LocalDateTime.now());
+        errorMap.put("error", message);
+        errorMap.put("status", status);
+        return errorMap;
+    }
 }
-
