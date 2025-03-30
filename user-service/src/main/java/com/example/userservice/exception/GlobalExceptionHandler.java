@@ -11,28 +11,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.Optional;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleException(Exception ex) {
-        return ResponseEntity.status(500).body(createErrorResponse(ex.getMessage(), 500));
+        return ResponseEntity.status(500).body(createErrorResponse(Optional.ofNullable(ex.getMessage()).orElse("Unexpected error"), 500));
     }
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleUserNotFound(UserNotFoundException ex) {
-        return ResponseEntity.status(404).body(createErrorResponse(ex.getMessage(), 404));
+        return ResponseEntity.status(404).body(createErrorResponse(Optional.ofNullable(ex.getMessage()).orElse("User not found"), 404));
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<Map<String, Object>> handleUserAlreadyExists(UserAlreadyExistsException ex) {
-        return ResponseEntity.status(409).body(createErrorResponse(ex.getMessage(), 409));
+        return ResponseEntity.status(409).body(createErrorResponse(Optional.ofNullable(ex.getMessage()).orElse("User already exists"), 409));
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Map<String, Object>> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
-        return ResponseEntity.status(409).body(createErrorResponse("Database error: " + ex.getRootCause().getMessage(), 409));
+        String rootMessage = Optional.ofNullable(ex.getRootCause()).map(Throwable::getMessage).orElse("Data integrity violation");
+        return ResponseEntity.status(409).body(createErrorResponse("Database error: " + rootMessage, 409));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
