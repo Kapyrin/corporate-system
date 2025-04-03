@@ -75,4 +75,14 @@ public class UserRestController {
                 userService.getUserByEmail(email).orElseThrow(() -> new UserNotFoundException(email))
         );
     }
+
+    @Operation(summary = "Check if user exists by ID")
+    @ApiResponse(responseCode = "200", description = "Returns true if user exists")
+    @ApiResponse(responseCode = "404", description = "User not found (optional)")
+    @GetMapping("/{id}/exists")
+    public ResponseEntity<Boolean> userExists(@PathVariable("id") Long id) {
+        boolean exists = userService.existsById(id);
+        return ResponseEntity.ok(exists);
+    }
+
 }

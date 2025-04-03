@@ -71,4 +71,10 @@ public class UserServiceImplementation implements UserService {
         return userRepository.findByEmail(email)
                 .map(userMapper::toDetailDto);
     }
+
+    @Override
+    public boolean existsById(Long id) {
+        return userRepository.existsById(id);
+    }
+
 }

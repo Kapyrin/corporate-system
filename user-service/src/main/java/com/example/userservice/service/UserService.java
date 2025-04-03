@@ -19,4 +19,5 @@ public interface UserService {
 
     List<UserSummaryDTO> getAllUsers();
     Optional<UserDetailDTO> getUserByEmail(String email);
+    boolean existsById(Long id);
 }
