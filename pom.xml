@@ -13,7 +13,7 @@
 
     <modules>
         <module>user-service</module>
-        <!-- first module -->
+        <module>time-tracking-service</module>
     </modules>
 
     <properties>
