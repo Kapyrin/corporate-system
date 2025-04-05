@@ -3,7 +3,7 @@ package com.example.timetrackingservice.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.sql.Timestamp;
+import java.time.Instant;
 
 @Entity
 @AllArgsConstructor
@@ -25,8 +25,8 @@ public class WorkLog {
     private Long userId;
 
     @Column(nullable = false, name = "start_time")
-    private Timestamp startTime;
+    private Instant startTime;
 
-    @Column(nullable = false, name = "end_time")
-    private Timestamp endTime;
+    @Column(name = "end_time")
+    private Instant endTime;
 }
