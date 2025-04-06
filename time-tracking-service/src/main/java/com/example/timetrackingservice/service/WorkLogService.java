@@ -3,7 +3,7 @@ package com.example.timetrackingservice.service;
 import com.example.timetrackingservice.dto.WorkLogReportDto;
 import com.example.timetrackingservice.dto.WorkLogResponseDto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -21,11 +21,7 @@ public interface WorkLogService {
 
     void deleteWorkLogById(Long id);
 
-    List<WorkLogResponseDto> getWorkLogsByDay(LocalDate date);
+    List<WorkLogResponseDto> getWorkLogsByDateRange(LocalDateTime from, LocalDateTime to);
 
-    List<WorkLogResponseDto> getWorkLogsByMonth(Integer month, Integer year);
-
-    List<WorkLogResponseDto> getWorkLogsByYear(Integer year);
-
-    WorkLogReportDto getReport(Long userId, LocalDate date);
+    WorkLogReportDto getReport(Long userId, String date);
 }

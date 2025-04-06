@@ -7,10 +7,10 @@ import com.example.timetrackingservice.exception.WorkLogException;
 import com.example.timetrackingservice.mapper.WorkLogMapper;
 import com.example.timetrackingservice.repository.WorkLogRepo;
 import com.example.timetrackingservice.service.WorkLogService;
+import com.example.timetrackingservice.service.logic.ReportDateResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,13 +19,19 @@ import java.util.List;
 public class WorkLogServicesImpl implements WorkLogService {
     private final WorkLogRepo repo;
     private final WorkLogMapper mapper;
+    private final ReportDateResolver reportDateResolver;
 
     @Override
     public WorkLogResponseDto startWorkDay(Long userId) {
-        WorkLog lastWorkLog = repo.findLastByUserId(userId).orElseThrow(RuntimeException::new);
-        if (lastWorkLog.getEndTime() == null) {
-            throw new WorkLogException("Last work log end time is null");
+        WorkLog lastWorkLog = repo.findTop1ByUserIdOrderByStartTimeDesc(userId).orElse(null);
+
+        if (lastWorkLog != null) {
+            autoClosePreviousShiftIfExpired(lastWorkLog);
+            if (lastWorkLog.getEndTime() == null) {
+                throw new WorkLogException("Previous shift is still open.");
+            }
         }
+
         WorkLog workLog = new WorkLog();
         workLog.setStartTime(LocalDateTime.now());
         workLog.setUserId(userId);
@@ -34,17 +40,23 @@ public class WorkLogServicesImpl implements WorkLogService {
 
     @Override
     public WorkLogResponseDto endWorkDay(Long userId) {
-        WorkLog lastWorkLog = repo.findLastByUserId(userId).orElseThrow(RuntimeException::new);
+        WorkLog lastWorkLog = repo.findTop1ByUserIdOrderByStartTimeDesc(userId)
+                .orElseThrow(() -> new WorkLogException("No work log found for user ID: " + userId));
+
+        autoClosePreviousShiftIfExpired(lastWorkLog);
+
         if (lastWorkLog.getEndTime() != null) {
-            throw new WorkLogException("Last work log end time is not null");
+            throw new WorkLogException("Work day already ended.");
         }
+
         lastWorkLog.setEndTime(LocalDateTime.now());
         return mapper.toDto(repo.save(lastWorkLog));
     }
 
     @Override
     public WorkLogResponseDto getWorkLogById(Long id) {
-        return mapper.toDto(repo.findById(id).orElseThrow(RuntimeException::new));
+        return mapper.toDto(repo.findById(id)
+                .orElseThrow(() -> new WorkLogException("No work log found with ID: " + id)));
     }
 
     @Override
@@ -58,22 +70,21 @@ public class WorkLogServicesImpl implements WorkLogService {
     }
 
     @Override
-    public List<WorkLogResponseDto> getWorkLogsByDay(LocalDate date) {
-        return mapper.toDto(repo.findAllByDate(date));
+    public List<WorkLogResponseDto> getWorkLogsByDateRange(LocalDateTime from, LocalDateTime to) {
+        return mapper.toDto(repo.findAllByStartTimeBetween(from, to));
     }
 
     @Override
-    public List<WorkLogResponseDto> getWorkLogsByMonth(Integer month, Integer year) {
-        return mapper.toDto(repo.findAllByMonthAndYear(month, year));
-    }
-
-    @Override
-    public List<WorkLogResponseDto> getWorkLogsByYear(Integer year) {
-        return mapper.toDto(repo.findAllByYear(year));
-    }
-
-    @Override
-    public WorkLogReportDto getReport(Long userId, LocalDate date) {
+    public WorkLogReportDto getReport(Long userId, String date) {
         return null;
+    }
+
+    private void autoClosePreviousShiftIfExpired(WorkLog lastWorkLog) {
+        if (lastWorkLog.getEndTime() == null &&
+                lastWorkLog.getStartTime().isBefore(LocalDateTime.now().minusHours(23))) {
+
+            lastWorkLog.setEndTime(lastWorkLog.getStartTime().plusHours(8));
+            repo.save(lastWorkLog);
+        }
     }
 }
