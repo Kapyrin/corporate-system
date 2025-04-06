@@ -21,5 +21,11 @@ public interface WorkLogService {
 
     void deleteWorkLogById(Long id);
 
+    List<WorkLogResponseDto> getWorkLogsByDay(LocalDate date);
+
+    List<WorkLogResponseDto> getWorkLogsByMonth(Integer month, Integer year);
+
+    List<WorkLogResponseDto> getWorkLogsByYear(Integer year);
+
     WorkLogReportDto getReport(Long userId, LocalDate date);
 }

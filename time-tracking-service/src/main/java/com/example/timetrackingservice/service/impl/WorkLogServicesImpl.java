@@ -58,6 +58,21 @@ public class WorkLogServicesImpl implements WorkLogService {
     }
 
     @Override
+    public List<WorkLogResponseDto> getWorkLogsByDay(LocalDate date) {
+        return mapper.toDto(repo.findAllByDate(date));
+    }
+
+    @Override
+    public List<WorkLogResponseDto> getWorkLogsByMonth(Integer month, Integer year) {
+        return mapper.toDto(repo.findAllByMonthAndYear(month, year));
+    }
+
+    @Override
+    public List<WorkLogResponseDto> getWorkLogsByYear(Integer year) {
+        return mapper.toDto(repo.findAllByYear(year));
+    }
+
+    @Override
     public WorkLogReportDto getReport(Long userId, LocalDate date) {
         return null;
     }
