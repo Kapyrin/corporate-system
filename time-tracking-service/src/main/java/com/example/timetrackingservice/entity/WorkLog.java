@@ -2,31 +2,33 @@ package com.example.timetrackingservice.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.antlr.v4.runtime.misc.NotNull;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "work_logs")
 @Getter
 @Setter
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "work_logs")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class WorkLog {
 
     @Id
-    @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
+    @EqualsAndHashCode.Include
     private Long id;
 
+    @NotNull
     @Column(nullable = false, name = "user_id")
     private Long userId;
 
-    @Column(nullable = false, name = "start_time")
-    private Instant startTime;
+    @Column(name = "start_time")
+    private LocalDateTime startTime;
 
     @Column(name = "end_time")
-    private Instant endTime;
+    private LocalDateTime endTime;
 }

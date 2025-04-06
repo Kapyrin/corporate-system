@@ -1,14 +1,25 @@
 package com.example.timetrackingservice.service;
 
+import com.example.timetrackingservice.dto.WorkLogReportDto;
+import com.example.timetrackingservice.dto.WorkLogResponseDto;
 
-import com.example.timetrackingservice.dto.WorkLogCreateDTO;
-import com.example.timetrackingservice.dto.WorkLogDetailDTO;
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 @Service
 public interface WorkLogService {
-    WorkLogDetailDTO startWorkLog(WorkLogCreateDTO createDTO);
 
-    WorkLogDetailDTO endWorkLog(WorkLogCreateDTO createDTO);
+    WorkLogResponseDto startWorkDay(Long userId);
 
+    WorkLogResponseDto endWorkDay(Long userId);
+
+    WorkLogResponseDto getWorkLogById(Long id);
+
+    List<WorkLogResponseDto> getAllLogsByUserId(Long userId);
+
+    void deleteWorkLogById(Long id);
+
+    WorkLogReportDto getReport(Long userId, LocalDate date);
 }
