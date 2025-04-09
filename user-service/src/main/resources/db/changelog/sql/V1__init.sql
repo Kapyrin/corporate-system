@@ -7,3 +7,9 @@ CREATE TABLE IF NOT EXISTS users (
                        email VARCHAR(255) NOT NULL,
                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+--changeset vladimir:2
+INSERT INTO users (name, email) VALUES
+                                    ('Alex', 'alex@example.com'),
+                                    ('Evgeniy', 'evgeniy@example.com'),
+                                    ('Vladimir', 'vladimir@example.com');
