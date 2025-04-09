@@ -1,16 +1,20 @@
 package com.example.timetrackingservice.service.impl;
 
+import com.example.timetrackingservice.client.UserClient;
 import com.example.timetrackingservice.dto.WorkLogReportDto;
 import com.example.timetrackingservice.dto.WorkLogResponseDto;
 import com.example.timetrackingservice.entity.WorkLog;
+import com.example.timetrackingservice.exception.UserNotFoundException;
 import com.example.timetrackingservice.exception.WorkLogException;
 import com.example.timetrackingservice.mapper.WorkLogMapper;
 import com.example.timetrackingservice.repository.WorkLogRepo;
 import com.example.timetrackingservice.service.WorkLogService;
+import com.example.timetrackingservice.service.logic.DateRange;
 import com.example.timetrackingservice.service.logic.ReportDateResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,9 +24,12 @@ public class WorkLogServicesImpl implements WorkLogService {
     private final WorkLogRepo repo;
     private final WorkLogMapper mapper;
     private final ReportDateResolver reportDateResolver;
+    private final UserClient userClient;
 
     @Override
     public WorkLogResponseDto startWorkDay(Long userId) {
+        validateUserExists(userId);
+
         WorkLog lastWorkLog = repo.findTop1ByUserIdOrderByStartTimeDesc(userId).orElse(null);
 
         if (lastWorkLog != null) {
@@ -40,6 +47,8 @@ public class WorkLogServicesImpl implements WorkLogService {
 
     @Override
     public WorkLogResponseDto endWorkDay(Long userId) {
+        validateUserExists(userId);
+
         WorkLog lastWorkLog = repo.findTop1ByUserIdOrderByStartTimeDesc(userId)
                 .orElseThrow(() -> new WorkLogException("No work log found for user ID: " + userId));
 
@@ -76,8 +85,36 @@ public class WorkLogServicesImpl implements WorkLogService {
 
     @Override
     public WorkLogReportDto getReport(Long userId, String date) {
-        return null;
+        WorkLog last = repo.findTop1ByUserIdOrderByStartTimeDesc(userId).orElse(null);
+        if (last != null) {
+            autoClosePreviousShiftIfExpired(last);
+        }
+
+        DateRange range = reportDateResolver.resolveDateRange(date);
+
+        List<WorkLog> logs = repo.findAllByUserIdAndStartTimeBetween(userId, range.from(), range.to()).stream()
+                .filter(log -> log.getEndTime() != null)
+                .toList();
+
+        Duration totalWorked = logs.stream()
+                .map(log -> Duration.between(log.getStartTime(), log.getEndTime()))
+                .reduce(Duration.ZERO, Duration::plus);
+
+        int daysWorked = logs.size();
+
+        long expectedHours = daysWorked * 8;
+        long actualHours = totalWorked.toHours();
+        long overtimeHours = Math.max(0, actualHours - expectedHours);
+
+        return WorkLogReportDto.builder()
+                .userId(userId)
+                .date(range.from().toLocalDate())
+                .totalWorked(totalWorked)
+                .daysWorked(daysWorked)
+                .overtimeHours(overtimeHours)
+                .build();
     }
+
 
     private void autoClosePreviousShiftIfExpired(WorkLog lastWorkLog) {
         if (lastWorkLog.getEndTime() == null &&
@@ -87,4 +124,11 @@ public class WorkLogServicesImpl implements WorkLogService {
             repo.save(lastWorkLog);
         }
     }
+
+    private void validateUserExists(Long userId) {
+        if (!Boolean.TRUE.equals(userClient.userExists(userId))) {
+            throw new UserNotFoundException(userId);
+        }
+    }
+
 }
