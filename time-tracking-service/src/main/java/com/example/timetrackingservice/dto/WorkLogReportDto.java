@@ -13,9 +13,8 @@ import java.time.LocalDate;
 @Builder
 public class WorkLogReportDto {
     private Long userId;
-    private LocalDate date;
+    private String date;
     @JsonSerialize(using = MyDurationSerializer.class)
-
     private Duration totalWorked;
     private long daysWorked;
     private long overtimeHours;

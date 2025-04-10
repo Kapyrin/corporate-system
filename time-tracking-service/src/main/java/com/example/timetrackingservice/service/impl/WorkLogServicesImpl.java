@@ -70,11 +70,13 @@ public class WorkLogServicesImpl implements WorkLogService {
 
     @Override
     public List<WorkLogResponseDto> getAllLogsByUserId(Long userId) {
+        validateUserExists(userId);
         return mapper.toDto(repo.findAllByUserId(userId));
     }
 
     @Override
     public void deleteWorkLogById(Long id) {
+
         repo.deleteById(id);
     }
 
@@ -85,6 +87,7 @@ public class WorkLogServicesImpl implements WorkLogService {
 
     @Override
     public WorkLogReportDto getReport(Long userId, String date) {
+        validateUserExists(userId);
         WorkLog last = repo.findTop1ByUserIdOrderByStartTimeDesc(userId).orElse(null);
         if (last != null) {
             autoClosePreviousShiftIfExpired(last);
@@ -108,7 +111,7 @@ public class WorkLogServicesImpl implements WorkLogService {
 
         return WorkLogReportDto.builder()
                 .userId(userId)
-                .date(range.from().toLocalDate())
+                .date(date)
                 .totalWorked(totalWorked)
                 .daysWorked(daysWorked)
                 .overtimeHours(overtimeHours)

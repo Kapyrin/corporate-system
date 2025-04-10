@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.*;
 @FeignClient(name = "userClient", url = "${user-service.url}")
 public interface UserClient {
 
-    @GetMapping("/users/{id}/exists")
+    @GetMapping("/api/users/{id}/exists")
     Boolean userExists(@PathVariable("id") Long id);
 }
