@@ -2,10 +2,12 @@ package com.example.timetrackingservice.dto;
 
 import com.example.timetrackingservice.service.logic.MyDurationSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.Duration;
-import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
