@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  mysql:
+    container_name: timetracking-mysql
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: timetracking_db
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  user-service:
+    build:
+      context: ./user-service
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    depends_on:
+      - mysql
+
+  time-tracking-service:
+    build:
+      context: ./time-tracking-service
+    ports:
+      - "8081:8081"
+    networks:
+      - app-network
+    depends_on:
+      mysql:
+       condition: service_healthy
+      user-service:
+        condition: service_started
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+networks:
+  app-network:
+    driver: bridge
