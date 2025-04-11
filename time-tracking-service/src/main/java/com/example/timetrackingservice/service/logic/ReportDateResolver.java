@@ -61,7 +61,9 @@ public class ReportDateResolver {
 
                 WeekRange range = numberOfWeeksInAMonth.getWeeksInMonth(year, month).get(week);
                 if (range == null) {
-                    throw new IllegalArgumentException("Week " + week + " does not exist for " + month + "/" + year);
+                    int totalWeeks = numberOfWeeksInAMonth.countWeeksInAMonth(year, month);
+                    throw new IllegalArgumentException("Week " + week + " does not exist for " + month + "/" + year +
+                            ". Total weeks in this month: " + totalWeeks);
                 }
                 return new DateRange(range.start().atStartOfDay(), range.end().atTime(LocalTime.MAX));
 
