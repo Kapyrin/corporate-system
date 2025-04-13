@@ -15,7 +15,6 @@ A microservice-based application with two main services:
 - **MySQL 8**
 - **Feign Clients**
 - **Liquibase**
-- **MapStruct**
 - **JUnit 5**
 
 ## Getting Started
