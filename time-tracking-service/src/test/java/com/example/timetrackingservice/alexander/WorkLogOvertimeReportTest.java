@@ -46,11 +46,11 @@ public class WorkLogOvertimeReportTest extends AbstractIntegrationTest {
     @Test
     void shouldReturnCorrectReportForUserWithOvertimeByMonth() {
         Long userId = 1L;
-        WorkLogReportDto report = workLogService.getReport(userId, "01");
+        WorkLogReportDto report = workLogService.getReport(userId, "2025-01");
 
         assertNotNull(report);
         assertEquals(userId, report.getUserId());
-        assertEquals("01", report.getDate());
+        assertEquals("2025-01", report.getDate());
         assertEquals(3, report.getDaysWorked());
 
         assertEquals(Duration.ofHours(25).plusMinutes(30), report.getTotalWorked());

@@ -12,7 +12,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 public class WorkLogResponseTest extends AbstractIntegrationTest {
@@ -25,7 +24,8 @@ public class WorkLogResponseTest extends AbstractIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        when(userClient.userExists(anyLong())).thenReturn(true);
+        when(userClient.userExists(NULL_USER_ID)).thenReturn(false);
+        when(userClient.userExists(EXISTS_USER_ID)).thenReturn(true);
     }
 
     @Test
