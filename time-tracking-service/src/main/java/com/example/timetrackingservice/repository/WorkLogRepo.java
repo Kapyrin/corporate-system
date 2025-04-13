@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public interface WorkLogRepo extends JpaRepository<WorkLog, Long> {
 
-Optional<WorkLog> findTop1ByUserIdOrderByStartTimeDesc(Long userId);
+    Optional<WorkLog> findTop1ByUserIdOrderByStartTimeDesc(Long userId);
 
     List<WorkLog> findAllByUserId(Long userId);
 
