@@ -1,4 +1,4 @@
-package com.example.timetrackingservice.service.logic;
+package com.example.timetrackingservice.service.logic.enity;
 
 import java.time.LocalDate;
 

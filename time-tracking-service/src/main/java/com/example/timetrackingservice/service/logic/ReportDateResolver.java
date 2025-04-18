@@ -1,5 +1,8 @@
 package com.example.timetrackingservice.service.logic;
 
+import com.example.timetrackingservice.service.logic.enity.DateRange;
+import com.example.timetrackingservice.service.logic.enity.ReportType;
+import com.example.timetrackingservice.service.logic.enity.WeekRange;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

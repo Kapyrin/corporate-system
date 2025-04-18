@@ -2,7 +2,7 @@ package com.example.timetrackingservice.alexander;
 
 import com.example.timetrackingservice.client.UserClient;
 import com.example.timetrackingservice.dto.WorkLogReportDto;
-import com.example.timetrackingservice.service.WorkLogService;
+import com.example.timetrackingservice.service.WorkLogReportService;
 import com.example.timetrackingservice.vladimir.AbstractIntegrationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,14 +11,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.Duration;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 public class WorkLogOvertimeReportTest extends AbstractIntegrationTest {
     @Autowired
-    private WorkLogService workLogService;
+    private WorkLogReportService workLogService;
 
     @MockBean
     private UserClient userClient;

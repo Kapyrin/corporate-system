@@ -2,7 +2,7 @@ package com.example.timetrackingservice.alexander;
 
 import com.example.timetrackingservice.client.UserClient;
 import com.example.timetrackingservice.dto.WorkLogResponseDto;
-import com.example.timetrackingservice.service.WorkLogService;
+import com.example.timetrackingservice.service.WorkLogCoreService;
 import com.example.timetrackingservice.vladimir.AbstractIntegrationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
 
 public class WorkLogResponseTest extends AbstractIntegrationTest {
     @Autowired
-    private WorkLogService workLogService;
+    private WorkLogCoreService workLogService;
     @MockBean
     private UserClient userClient;
     private final Long EXISTS_USER_ID = 1L;
@@ -30,7 +30,7 @@ public class WorkLogResponseTest extends AbstractIntegrationTest {
 
     @Test
     void testStartWorkLog() {
-        WorkLogResponseDto responseDto = workLogService.startWorkDay(EXISTS_USER_ID);
+        WorkLogResponseDto responseDto = workLogService.switchWorkDay(EXISTS_USER_ID);
 
         assertNotNull(responseDto);
         assertEquals(EXISTS_USER_ID, responseDto.getUserId());
@@ -39,8 +39,8 @@ public class WorkLogResponseTest extends AbstractIntegrationTest {
 
     @Test
     void testStopWorkLog() {
-        workLogService.startWorkDay(EXISTS_USER_ID);
-        WorkLogResponseDto responseDto = workLogService.endWorkDay(EXISTS_USER_ID);
+        workLogService.switchWorkDay(EXISTS_USER_ID);
+        WorkLogResponseDto responseDto = workLogService.switchWorkDay(EXISTS_USER_ID);
 
         assertNotNull(responseDto);
         assertEquals(EXISTS_USER_ID, responseDto.getUserId());
@@ -60,7 +60,7 @@ public class WorkLogResponseTest extends AbstractIntegrationTest {
     void testStartWorkDay_userNotExists() {
 
         Exception exception = assertThrows(RuntimeException.class,
-                () -> workLogService.startWorkDay(NULL_USER_ID));
+                () -> workLogService.switchWorkDay(NULL_USER_ID));
 
         assertTrue(exception.getMessage().contains("User with id " + NULL_USER_ID + " was not found"));
     }

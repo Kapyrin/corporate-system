@@ -4,7 +4,7 @@ import com.example.timetrackingservice.client.UserClient;
 import com.example.timetrackingservice.dto.WorkLogResponseDto;
 import com.example.timetrackingservice.entity.WorkLog;
 import com.example.timetrackingservice.repository.WorkLogRepo;
-import com.example.timetrackingservice.service.WorkLogService;
+import com.example.timetrackingservice.service.WorkLogCoreService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -22,7 +22,7 @@ public class WorkLogAutoCloseTest extends AbstractIntegrationTest {
     private WorkLogRepo workLogRepo;
 
     @Autowired
-    private WorkLogService workLogService;
+    private WorkLogCoreService workLogService;
 
     @MockBean
     private UserClient userClient;
@@ -41,7 +41,7 @@ public class WorkLogAutoCloseTest extends AbstractIntegrationTest {
 
     @Test
     void testAutoClosePreviousShift() {
-        WorkLogResponseDto newShift = workLogService.startWorkDay(testUserId);
+        WorkLogResponseDto newShift = workLogService.switchWorkDay(testUserId);
 
         Optional<WorkLog> previous = workLogRepo.findAllByUserId(testUserId).stream()
                 .filter(log -> !log.getId().equals(newShift.getId()))

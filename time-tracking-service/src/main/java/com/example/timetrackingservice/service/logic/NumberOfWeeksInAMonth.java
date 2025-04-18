@@ -1,5 +1,6 @@
 package com.example.timetrackingservice.service.logic;
 
+import com.example.timetrackingservice.service.logic.enity.WeekRange;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;

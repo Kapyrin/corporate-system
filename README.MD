@@ -25,3 +25,9 @@ A microservice-based application with two main services:
 ```bash
 
 docker compose up --build
+```
+
+```bash
+
+docker compose down
+```

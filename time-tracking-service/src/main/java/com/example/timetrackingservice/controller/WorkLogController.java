@@ -1,7 +1,7 @@
 package com.example.timetrackingservice.controller;
 
 import com.example.timetrackingservice.dto.WorkLogResponseDto;
-import com.example.timetrackingservice.service.WorkLogService;
+import com.example.timetrackingservice.service.WorkLogCoreService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -17,25 +17,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WorkLogController {
 
-    private final WorkLogService workLogService;
+    private final WorkLogCoreService workLogService;
 
-    @Operation(summary = "Start work day")
-    @ApiResponse(responseCode = "201", description = "Work day started")
-    @ApiResponse(responseCode = "409", description = "Cannot start work day")
-    @PostMapping("/start/{userId}")
-    public ResponseEntity<WorkLogResponseDto> startWorkDay(
+
+    @Operation(summary = "Toggle work day: start if no active shift, stop if active")
+    @ApiResponse(responseCode = "201", description = "Work day started or ended")
+    @ApiResponse(responseCode = "409", description = "Cannot toggle work day")
+    @PostMapping("/toggle/{userId}")
+    public ResponseEntity<WorkLogResponseDto> toggleWorkDay(
             @Parameter(name = "userId", description = "User ID") @PathVariable("userId") Long userId) {
-        return ResponseEntity.status(201).body(workLogService.startWorkDay(userId));
+        return ResponseEntity.status(201).body(workLogService.switchWorkDay(userId));
     }
 
-    @Operation(summary = "End work day")
-    @ApiResponse(responseCode = "201", description = "Work day ended")
-    @ApiResponse(responseCode = "409", description = "Cannot end work day")
-    @PostMapping("/end/{userId}")
-    public ResponseEntity<WorkLogResponseDto> endWorkDay(
-            @Parameter(name = "userId", description = "User ID") @PathVariable("userId") Long userId) {
-        return ResponseEntity.status(201).body(workLogService.endWorkDay(userId));
-    }
 
     @Operation(summary = "Get work log by ID")
     @ApiResponse(responseCode = "200", description = "Work log found")

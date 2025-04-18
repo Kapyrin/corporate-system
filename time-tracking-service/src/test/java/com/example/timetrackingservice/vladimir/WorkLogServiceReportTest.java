@@ -2,7 +2,7 @@ package com.example.timetrackingservice.vladimir;
 
 import com.example.timetrackingservice.client.UserClient;
 import com.example.timetrackingservice.dto.WorkLogReportDto;
-import com.example.timetrackingservice.service.WorkLogService;
+import com.example.timetrackingservice.service.WorkLogReportService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
 public class WorkLogServiceReportTest extends AbstractIntegrationTest {
 
     @Autowired
-    private WorkLogService workLogService;
+    private WorkLogReportService workLogService;
 
     @MockBean
     private UserClient userClient;
