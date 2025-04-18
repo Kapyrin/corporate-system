@@ -6,12 +6,14 @@ import com.example.timetrackingservice.entity.WorkLog;
 
 import com.example.timetrackingservice.repository.WorkLogRepo;
 import com.example.timetrackingservice.service.WorkLogCoreService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.annotation.Rollback;
 
 import java.time.LocalDateTime;
 
@@ -19,6 +21,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
+@Transactional
+@Rollback
 public class WorkLogAutoClosingTest {
     @Autowired
     private WorkLogRepo workLogRepo;
