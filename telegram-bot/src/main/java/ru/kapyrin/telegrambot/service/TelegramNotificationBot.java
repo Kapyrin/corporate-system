@@ -31,7 +31,7 @@ public class TelegramNotificationBot extends TelegramLongPollingBot {
             if (msg.equals("/start")) {
                 log.info("New /start received from telegramId (chatId): {}", chatId);
                 sendText(chatId, """
-                        Welcome! 
+                        Welcome!
                         Your Telegram ID is: %d
                         
                         Please share this ID with your system admin or link it manually using:
