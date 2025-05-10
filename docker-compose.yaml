@@ -1,6 +1,25 @@
 version: '3.8'
 
 services:
+  postgres:
+    image: postgres:15
+    container_name: telegram-postgres
+    environment:
+      POSTGRES_DB: telegram_bot
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+    volumes:
+      - telegram_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   mysql:
     container_name: timetracking-mysql
     image: mysql:8.0
@@ -12,8 +31,10 @@ services:
       - "3306:3306"
     networks:
       - app-network
+    volumes:
+      - timetracking_mysql_data:/var/lib/mysql
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 5s
       timeout: 3s
       retries: 5
@@ -21,28 +42,53 @@ services:
   user-service:
     build:
       context: ./user-service
+    container_name: user-service
     ports:
       - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
     networks:
       - app-network
-    depends_on:
-      - mysql
 
   time-tracking-service:
     build:
       context: ./time-tracking-service
+    container_name: time-tracking-service
     ports:
       - "8081:8081"
-    networks:
-      - app-network
     depends_on:
       mysql:
-       condition: service_healthy
+        condition: service_healthy
       user-service:
         condition: service_started
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - app-network
+
+  telegram-bot:
+    build:
+      context: ./telegram-bot
+    container_name: telegram-bot
+    ports:
+      - "8083:8083"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      time-tracking-service:
+        condition: service_started
+    environment:
+      TELEGRAM_BOT_TOKEN: "8076335898:AAF9FRdFuBbNzqxceOHLkiFjBq4qaLsK4vQ"
+      TELEGRAM_BOT_USERNAME: "time_tracking_notification_bot"
+      SPRING_PROFILES_ACTIVE: "docker"
+    networks:
+      - app-network
 
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  telegram_pgdata:
+  timetracking_mysql_data:

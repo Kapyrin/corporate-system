@@ -39,4 +39,12 @@ public class TelegramUserService implements UserRegistryService {
                 .map(TelegramUser::getTelegramId)
                 .toList();
     }
+
+    @Override
+    public List<Long> getUserIdsByTelegramId(Long telegramId) {
+        return repo.findAllByTelegramId(telegramId).stream()
+                .map(TelegramUser::getUserId)
+                .distinct()
+                .toList();
+    }
 }
