@@ -1,4 +1,4 @@
-package ru.roznov.rabbitservice.config;
+package ru.roznov.rabbitservice.rabbit;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
