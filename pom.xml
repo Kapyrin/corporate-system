@@ -15,7 +15,7 @@
         <module>user-service</module>
         <module>time-tracking-service</module>
         <module>telegram-bot</module>
-        <module>rabbit-service</module>
+        <module>notification-service</module>
     </modules>
 
     <properties>
