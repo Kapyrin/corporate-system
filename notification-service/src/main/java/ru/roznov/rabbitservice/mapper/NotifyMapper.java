@@ -10,9 +10,6 @@ import ru.roznov.rabbitservice.entity.NotificationType;
 
 import java.util.List;
 
-import static ru.roznov.rabbitservice.entity.NotificationType.WORK_DAY_ENDED;
-import static ru.roznov.rabbitservice.entity.NotificationType.WORK_DAY_STARTED;
-
 @Mapper(componentModel = "spring", imports = ru.roznov.rabbitservice.entity.NotificationType.class)
 public interface NotifyMapper {
 
