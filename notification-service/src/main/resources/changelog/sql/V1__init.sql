@@ -21,3 +21,7 @@ VALUES
 -- User 3
 (3, 'START', 'Workday started', '2024-03-10T10:15:00Z'),
 (3, 'STOP', 'Workday ended', '2024-03-10T19:20:00Z');
+
+--changeset alex:2
+ALTER TABLE notifications
+    ALTER COLUMN type TYPE VARCHAR(30);

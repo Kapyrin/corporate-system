@@ -1,6 +1,6 @@
 package ru.roznov.rabbitservice.entity;
 
 public enum NotificationType {
-    START, 
-    STOP
+    WORK_DAY_STARTED,
+    WORK_DAY_ENDED
 }

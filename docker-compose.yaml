@@ -19,6 +19,41 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+  postgres-notification:
+    image: postgres:15
+    container_name: notification-postgres
+    environment:
+      POSTGRES_DB: notifications_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+    ports:
+      - "5433:5432"
+    networks:
+      - app-network
+    volumes:
+      - notification_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  notification-service:
+    build:
+      context: ./notification-service
+    container_name: notification-service
+    ports:
+      - "8084:8084"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres-notification:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - app-network
+
 
   mysql:
     container_name: timetracking-mysql
@@ -62,6 +97,8 @@ services:
         condition: service_healthy
       user-service:
         condition: service_started
+      rabbitmq:
+        condition: service_healthy
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     networks:
@@ -84,6 +121,22 @@ services:
       SPRING_PROFILES_ACTIVE: "docker"
     networks:
       - app-network
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: rabbitmq
+    restart: "no"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - app-network
+    healthcheck:
+      test: rabbitmq-diagnostics -q status
+      interval: 10s
+      timeout: 5s
+      start_period: 10s
+      retries: 5
+
 
 networks:
   app-network:
@@ -92,3 +145,4 @@ networks:
 volumes:
   telegram_pgdata:
   timetracking_mysql_data:
+  notification_pgdata:

@@ -1,54 +1,76 @@
 package ru.roznov.rabbitservice.rabbit;
 
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@Setter
-@RequiredArgsConstructor
 public class RabbitConfig {
-    @Value("${queue.name.telegram}")
-    private String telegramQueueName;
-    @Value("${queue.name.notify}")
-    private String notificationQueueName;
-    @Value("${spring.rabbitmq.username}")
-    private String userName;
-    @Value("${spring.rabbitmq.password}")
-    private String password;
-    @Value("${spring.rabbitmq.host}")
-    private String host;
-    private final RabbitAdmin rabbitAdmin;
+
+    public static final String EXCHANGE = "worklog.exchange";
+    public static final String QUEUE_NOTIFY = "notifications.queue";
+    public static final String QUEUE_TELEGRAM = "telegram.queue";
+    public static final String ROUTING_KEY_NOTIFY = "notifications.event";
+    public static final String ROUTING_KEY_TELEGRAM = "telegram.event";
 
     @Bean
-    public CachingConnectionFactory connectionFactory() {
-        CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory(host);
-        cachingConnectionFactory.setUsername(userName);
-        cachingConnectionFactory.setPassword(password);
-        return cachingConnectionFactory;
+    public TopicExchange topicExchange() {
+        return new TopicExchange(EXCHANGE, true, false);
     }
 
     @Bean
-    public RabbitAdmin rabbitAdmin() {
-        return new RabbitAdmin(connectionFactory());
+    public Queue notifyQueue() {
+        return new Queue(QUEUE_NOTIFY, true);
     }
 
     @Bean
     public Queue telegramQueue() {
-        Queue telegramQueue = new Queue(telegramQueueName, true);
-        rabbitAdmin.declareQueue(telegramQueue);
-        return telegramQueue;
+        return new Queue(QUEUE_TELEGRAM, true);
     }
 
     @Bean
-    public Queue notificationsQueue() {
-        Queue notifyQueue = new Queue(notificationQueueName, true);
-        rabbitAdmin.declareQueue(notifyQueue);
-        return notifyQueue;
+    public Binding notifyBinding() {
+        return BindingBuilder
+                .bind(notifyQueue())
+                .to(topicExchange())
+                .with(ROUTING_KEY_NOTIFY);
+    }
+
+    @Bean
+    public Binding telegramBinding() {
+        return BindingBuilder
+                .bind(telegramQueue())
+                .to(topicExchange())
+                .with(ROUTING_KEY_TELEGRAM);
+    }
+
+    @Bean
+    public AmqpAdmin amqpAdmin(ConnectionFactory connectionFactory) {
+        return new RabbitAdmin(connectionFactory);
+    }
+
+    @Bean
+    public Jackson2JsonMessageConverter messageConverter() {
+        return new Jackson2JsonMessageConverter();
+    }
+
+    @Bean
+    public RabbitTemplate rabbitTemplate(ConnectionFactory factory) {
+        RabbitTemplate template = new RabbitTemplate(factory);
+        template.setMessageConverter(messageConverter());
+        return template;
+    }
+
+    @Bean
+    public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(ConnectionFactory factory) {
+        var factoryBean = new SimpleRabbitListenerContainerFactory();
+        factoryBean.setConnectionFactory(factory);
+        factoryBean.setMessageConverter(messageConverter());
+        return factoryBean;
     }
 }

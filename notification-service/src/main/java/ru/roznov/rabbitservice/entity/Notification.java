@@ -26,7 +26,7 @@ public class Notification {
     private Long userId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "type", length = 5)
+    @Column(name = "type")
     private NotificationType type;
 
     @Lob

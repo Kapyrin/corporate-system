@@ -5,7 +5,9 @@ import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
 import ru.roznov.rabbitservice.dto.NotifyCreateDTO;
 import ru.roznov.rabbitservice.dto.NotifyDetailDTO;
+import ru.roznov.rabbitservice.entity.Notification;
 import ru.roznov.rabbitservice.mapper.NotifyMapper;
+import ru.roznov.rabbitservice.rabbit.MessageSender;
 import ru.roznov.rabbitservice.repository.NotificationRepository;
 import ru.roznov.rabbitservice.service.NotificationService;
 
@@ -16,10 +18,13 @@ import java.util.List;
 public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
     private final NotifyMapper mapper;
+    private final MessageSender messageSender;
 
     @Override
     public NotifyDetailDTO saveNotification(NotifyCreateDTO dto) {
-        return mapper.toDetailDTO(notificationRepository.save(mapper.toEntity(dto)));
+        Notification savedNotification = notificationRepository.save(mapper.toEntity(dto));
+        messageSender.sendToTelegram(dto);
+        return mapper.toDetailDTO(savedNotification);
     }
 
     @Override

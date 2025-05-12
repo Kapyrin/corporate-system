@@ -1,10 +1,13 @@
 package com.example.timetrackingservice.service.impl;
 
+import com.example.timetrackingservice.dto.NotificationEventType;
+import com.example.timetrackingservice.dto.NotificationMessageDto;
 import com.example.timetrackingservice.dto.WorkLogResponseDto;
 import com.example.timetrackingservice.entity.WorkLog;
 import com.example.timetrackingservice.exception.WorkLogException;
 import com.example.timetrackingservice.mapper.WorkLogMapper;
 import com.example.timetrackingservice.repository.WorkLogRepo;
+import com.example.timetrackingservice.service.rabbit.NotificationPublisher;
 import com.example.timetrackingservice.service.WorkLogCoreService;
 import com.example.timetrackingservice.service.logic.WorkLogHelperService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,7 @@ public class WorkLogCoreServiceImpl implements WorkLogCoreService {
     private final WorkLogMapper mapper;
     private final WorkLogRepo repo;
     private final WorkLogHelperService helper;
+    private final NotificationPublisher notificationPublisher;
 
     @Override
     public WorkLogResponseDto switchWorkDay(Long userId) {
@@ -30,15 +34,32 @@ public class WorkLogCoreServiceImpl implements WorkLogCoreService {
 
             if (last.getEndTime() == null) {
                 last.setEndTime(LocalDateTime.now());
-                return mapper.toDto(repo.save(last));
+                WorkLog saved = repo.save(last);
+
+                notificationPublisher.publish(new NotificationMessageDto(
+                        saved.getUserId(),
+                        NotificationEventType.WORK_DAY_ENDED,
+                        saved.getEndTime().atZone(java.time.ZoneId.systemDefault()).toInstant().toString()
+                ));
+
+                return mapper.toDto(saved);
             }
         }
 
         WorkLog newLog = new WorkLog();
         newLog.setUserId(userId);
         newLog.setStartTime(LocalDateTime.now());
-        return mapper.toDto(repo.save(newLog));
+        WorkLog saved = repo.save(newLog);
+
+        notificationPublisher.publish(new NotificationMessageDto(
+                saved.getUserId(),
+                NotificationEventType.WORK_DAY_STARTED,
+                saved.getStartTime().atZone(java.time.ZoneId.systemDefault()).toInstant().toString()
+        ));
+
+        return mapper.toDto(saved);
     }
+
 
 
     @Override

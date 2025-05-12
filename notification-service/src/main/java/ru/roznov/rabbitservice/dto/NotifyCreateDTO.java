@@ -1,5 +1,6 @@
 package ru.roznov.rabbitservice.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -21,9 +22,6 @@ public class NotifyCreateDTO {
     @NotNull(message = "Type is required")
     private NotificationType type;
 
-    @NotBlank(message = "Message is required")
-    @Size(max = 255, message = "Message must be at most 255 characters")
-    private String message;
-
+    @JsonProperty("timestamp")
     private Instant receivedAt;
 }
