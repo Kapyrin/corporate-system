@@ -1,11 +1,9 @@
-package ru.kapyrin.telegrambot.dto;
+package ru.roznov.rabbitservice.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 @Data
 @Schema(description = "Notification message sent to Telegram users")

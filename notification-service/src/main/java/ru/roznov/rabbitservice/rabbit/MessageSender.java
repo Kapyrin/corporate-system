@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.roznov.rabbitservice.dto.NotificationMessage;
 import ru.roznov.rabbitservice.dto.NotifyCreateDTO;
+import ru.roznov.rabbitservice.mapper.NotifyMapper;
 
 @Service
 @RequiredArgsConstructor
@@ -18,10 +20,12 @@ public class MessageSender {
     private String telegramRoutingKey;
 
     private final RabbitTemplate rabbitTemplate;
+    private final NotifyMapper mapper;
 
     public void sendToTelegram(NotifyCreateDTO dto) {
         log.info("Sending to telegram queue: {}", dto);
-        rabbitTemplate.convertAndSend(exchange, telegramRoutingKey, dto);
+        NotificationMessage message = mapper.toTelegramMessage(dto);
+        rabbitTemplate.convertAndSend(exchange, telegramRoutingKey, message);
     }
 
 //    public void sendToNotification(NotifyCreateDTO dto) {
