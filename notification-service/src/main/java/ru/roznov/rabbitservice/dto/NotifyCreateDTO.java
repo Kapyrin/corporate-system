@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import ru.roznov.rabbitservice.entity.NotificationType;
 
 
+import java.io.Serializable;
 import java.time.Instant;
 
 @Data
@@ -16,14 +17,15 @@ import java.time.Instant;
 @NoArgsConstructor
 public class NotifyCreateDTO {
 
+    @NotNull
     private Long userId;
 
     @NotNull(message = "Type is required")
-    private NotificationType type;
+    private String type;
 
     @NotBlank(message = "Message is required")
     @Size(max = 255, message = "Message must be at most 255 characters")
     private String message;
-
+    @NotNull
     private Instant receivedAt;
 }

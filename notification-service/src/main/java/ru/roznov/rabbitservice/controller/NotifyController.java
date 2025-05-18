@@ -1,5 +1,6 @@
 package ru.roznov.rabbitservice.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -8,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import ru.roznov.rabbitservice.dto.NotifyCreateDTO;
 import ru.roznov.rabbitservice.dto.NotifyDetailDTO;
+import ru.roznov.rabbitservice.rabbit.MessageSender;
 import ru.roznov.rabbitservice.service.NotificationService;
 
 import java.util.List;
@@ -18,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NotifyController {
     private final NotificationService notificationService;
+    private final MessageSender messageSender;
 
     @Operation(summary = "Get notify for user by id", description = "Returns all notify for user by id")
     @ApiResponse(responseCode = "200", description = "Notifications returned")
@@ -38,5 +42,11 @@ public class NotifyController {
 
         return ResponseEntity.ok(notificationService.getRecentNotifications(userId, limit));
 
+    }
+    @Operation(description = "Send message to RabbitMQ in queue with delay")
+    @ApiResponse(responseCode = "204")
+    @PostMapping("/test")
+    public void testNotification(@RequestBody String txt) throws JsonProcessingException {
+        messageSender.sendToNotification(txt);
     }
 }
