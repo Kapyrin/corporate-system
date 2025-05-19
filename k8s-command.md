@@ -38,6 +38,9 @@ kubectl exec -it time-tracking-service-5754c8ff69-hx6l7 -n time-tracking-ns -- n
 kubectl delete pod -l app=time-tracking-service -n time-tracking-ns
 kubectl delete pod -l app=user-service -n user-service-ns
 
+kubectl rollout restart deployment telegram-bot -n telegram-bot-ns
+
+
 # 11. Применить изменения в ConfigMap
 kubectl apply -f k8s/time-tracking-service/configmap.yaml
 

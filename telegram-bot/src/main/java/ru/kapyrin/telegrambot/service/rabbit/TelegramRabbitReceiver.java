@@ -16,7 +16,7 @@ public class TelegramRabbitReceiver {
 
     @RabbitListener(queues = "${queue.name.telegram}")
     public void receive(NotificationMessage message) {
-        log.info("📥 Received from queue: {}", message);
+        log.info(" Received from queue: {}", message);
         notificationService.sendNotification(message);
     }
 }

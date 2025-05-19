@@ -21,6 +21,11 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     private String formatMessage(NotificationMessage msg) {
-        return "Notification:\n" + msg.getMessage() + "\n " + msg.getTimestamp();
+        return " Notification\n" +
+                " userId: " + msg.getUserId() + "\n" +
+                " Message: " + msg.getMessage() + "\n" +
+                " Timestamp: " + msg.getTimestamp();
     }
+
+
 }

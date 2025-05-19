@@ -28,11 +28,13 @@ public class MessageSender {
         try {
             log.info("Sending to telegram queue: {}", dto);
             NotificationMessage message = mapper.toTelegramMessage(dto);
+            log.info("🟡 BEFORE SENDING:");
+            log.info("userId: {}", dto.getUserId());
+            log.info("Mapped: {}", message);
             rabbitTemplate.convertAndSend(exchange, telegramRoutingKey, message);
         } catch (AmqpException e) {
             log.error("RabbitMQ error: {}", e.getMessage());
             throw new MessageSendingException("telegram.queue", e);
         }
     }
-
 }
