@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rabbitmq-config
+  namespace: rabbitmq-ns
+data:
+  RABBITMQ_VHOST: /
+  SPRING_RABBITMQ_HOST: rabbitmq.rabbitmq-ns.svc.cluster.local
+  SPRING_RABBITMQ_PORT: "5672"
+  SPRING_RABBITMQ_EXCHANGE: worklog.exchange
+  SPRING_RABBITMQ_ROUTING_KEY: telegram.event

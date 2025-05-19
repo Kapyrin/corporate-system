@@ -29,7 +29,6 @@ public class Notification {
     @Column(name = "type")
     private NotificationType type;
 
-    @Lob
     @Column(name = "message")
     private String message;
 

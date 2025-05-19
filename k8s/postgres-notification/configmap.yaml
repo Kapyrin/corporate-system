@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-notification-config
+  namespace: notification-ns
+data:
+  SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-notification.postgres-notification-ns.svc.cluster.local:5432/notifications_db
+  SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+  SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+  SPRING_JPA_SHOW_SQL: "true"
