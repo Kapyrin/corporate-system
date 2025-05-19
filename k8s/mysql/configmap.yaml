@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+  namespace: mysql-ns
+data:
+  MYSQL_DATABASE: timetracking_db
