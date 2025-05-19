@@ -25,6 +25,9 @@ public class MessageSender {
     public void sendToTelegram(NotifyCreateDTO dto) {
         log.info("Sending to telegram queue: {}", dto);
         NotificationMessage message = mapper.toTelegramMessage(dto);
+        log.info("🟡 BEFORE SENDING:");
+        log.info("userId: {}", dto.getUserId());
+        log.info("Mapped: {}", message);
         rabbitTemplate.convertAndSend(exchange, telegramRoutingKey, message);
     }
 
