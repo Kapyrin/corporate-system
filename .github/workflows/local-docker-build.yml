@@ -1,0 +1,42 @@
+name: Build Changed Microservices
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  detect-and-build:
+    name: Detect changed service and build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Detect changed services
+        id: detect
+        run: |
+          echo "CHANGED_SERVICES=" >> $GITHUB_ENV
+          for service in user-service notification-service time-tracking-service telegram-bot; do
+            if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep "^$service/"; then
+              echo "Detected changes in $service"
+              echo "CHANGED_SERVICES+=${service} " >> $GITHUB_ENV
+            fi
+          done
+
+      - name: Build changed services
+        if: env.CHANGED_SERVICES != ''
+        run: |
+          for service in $CHANGED_SERVICES; do
+            echo "🔨 Building $service"
+            cd $service
+            mvn clean package -DskipTests
+            docker build -t $service:latest .
+            cd ..
+          done

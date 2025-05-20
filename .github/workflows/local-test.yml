@@ -1,0 +1,46 @@
+name: Build and Push Changed Microservices
+
+on:
+  push:
+    branches:
+      - telegram-bot
+
+jobs:
+  detect-and-build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up DockerHub credentials
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Detect changed microservices
+        id: detect
+        run: |
+          CHANGED_SERVICES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} \
+            | grep -E '^(telegram-bot|user-service|time-tracking-service|notification-service)/' \
+            | cut -d/ -f1 | sort -u | uniq)
+
+          echo "Detected changed services:"
+          echo "$CHANGED_SERVICES"
+          echo "changed=$CHANGED_SERVICES" >> $GITHUB_OUTPUT
+
+      - name: Build & push Docker images
+        if: steps.detect.outputs.changed != ''
+        run: |
+          for service in ${{ steps.detect.outputs.changed }}; do
+            echo "🏗 Building $service"
+            cd $service
+            mvn clean package -DskipTests
+            docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/$service:latest .
+            docker push ${{ secrets.DOCKERHUB_USERNAME }}/$service:latest
+            cd ..
+          done
