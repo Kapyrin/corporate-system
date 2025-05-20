@@ -60,5 +60,5 @@ chmod +x delete.sh
 get pods --all-namespaces
 
 ```
-
+ 
 
