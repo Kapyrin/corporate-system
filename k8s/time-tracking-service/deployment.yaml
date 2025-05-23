@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: time-tracking-service
+  namespace: time-tracking-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: time-tracking-service
+  template:
+    metadata:
+      labels:
+        app: time-tracking-service
+    spec:
+      containers:
+        - name: time-tracking-service
+          image: time-tracking-service:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8081
+          envFrom:
+            - configMapRef:
+                name: time-tracking-config
+            - secretRef:
+                name: time-tracking-secret

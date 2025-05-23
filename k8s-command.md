@@ -57,3 +57,5 @@ kubectl delete pv pvc-88e61fd2-c6f8-4ae9-852d-fe070a3ecf6e
 
 # 15. Выполнить запрос внутри пода для проверки сервиса
 kubectl exec -it telegram-bot-7f74b99c5-zsbg4 -n telegram-bot-ns -- wget --server-response -O - http://user-service.user-service-ns.svc.cluster.local:8080/api/users/1/exists
+
+kubectl config set-cluster docker-desktop --server=https://127.0.0.1:6443

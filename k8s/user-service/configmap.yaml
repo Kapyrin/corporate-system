@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-service-config
+  namespace: user-service-ns
+data:
+  SPRING_PROFILES_ACTIVE: docker
+  SPRING_DATASOURCE_URL: jdbc:h2:file:/data/userdb
+  SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.h2.Driver
+  SPRING_JPA_HIBERNATE_DDL_AUTO: update
+  LOGGING_LEVEL_COM_FASTERXML_JACKSON: DEBUG
+  LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_WEB: DEBUG

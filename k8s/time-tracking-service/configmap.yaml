@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: time-tracking-config
+  namespace: time-tracking-ns
+data:
+  SPRING_PROFILES_ACTIVE: docker
+
+  SPRING_DATASOURCE_URL: jdbc:mysql://mysql.mysql-ns.svc.cluster.local:3306/timetracking_db
+  SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+
+  SPRING_RABBITMQ_HOST: rabbitmq.rabbitmq-ns.svc.cluster.local
+  SPRING_RABBITMQ_PORT: "5672"
+  SPRING_RABBITMQ_EXCHANGE: worklog.exchange
+  SPRING_RABBITMQ_ROUTING_KEY: telegram.event
+#  USER_SERVICE_URL: http://10.106.100.183:8080
+  USER_SERVICE_URL: http://user-service.user-service-ns.svc.cluster.local:8080
+#  USER_SERVICE_URL: http://10.100.77.19:8080
+#  USER_SERVICE_URL: http://user-service-new.user-service-ns.svc.cluster.local:8080
+  LOGGING_LEVEL_COM_EXAMPLE_TIMETRACKINGSERVICE_CLIENT: DEBUG

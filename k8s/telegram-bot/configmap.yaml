@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: telegram-bot-config
+  namespace: telegram-bot-ns
+data:
+  SPRING_PROFILES_ACTIVE: docker
+  SPRING_DATASOURCE_URL: jdbc:postgresql://postgres.postgres-ns.svc.cluster.local:5432/telegram_bot
+  SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+  SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+  SPRING_JPA_SHOW_SQL: "true"
+  SPRING_RABBITMQ_HOST: rabbitmq.rabbitmq-ns.svc.cluster.local
+  SPRING_RABBITMQ_PORT: "5672"
+  SPRING_RABBITMQ_EXCHANGE: worklog.exchange
+  SPRING_RABBITMQ_ROUTING_KEY: telegram.event
+  TIME_TRACKING_URL: http://time-tracking-service.time-tracking-ns.svc.cluster.local:8081
