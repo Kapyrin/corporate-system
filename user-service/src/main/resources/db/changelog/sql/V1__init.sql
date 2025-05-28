@@ -13,3 +13,9 @@ INSERT INTO users (name, email) VALUES
                                     ('Alex', 'alex@example.com'),
                                     ('Evgeniy', 'evgeniy@example.com'),
                                     ('Vladimir', 'vladimir@example.com');
+
+--changeset vladimir:3
+ALTER TABLE users ALTER COLUMN name DROP NOT NULL;
+
+--changeset vladimir:4
+ALTER TABLE users ALTER COLUMN email DROP NOT NULL;

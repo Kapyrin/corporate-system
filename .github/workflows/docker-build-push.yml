@@ -2,7 +2,7 @@ name: Build Changed Microservices
 
 on:
   push:
-    branches: [ telegram-bot ]  # поменяй на main если нужно
+    branches: [ telegram-bot ]
 
 jobs:
   detect-and-build:
