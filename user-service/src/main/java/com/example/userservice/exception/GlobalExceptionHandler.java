@@ -78,4 +78,16 @@ public class GlobalExceptionHandler {
                         .build()
         );
     }
+
+    @ExceptionHandler(RoleNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleRoleNotFound(RoleNotFoundException ex) {
+        return ResponseEntity.status(500).body(
+                ErrorResponse.builder()
+                        .timestamp(LocalDateTime.now())
+                        .status(500)
+                        .error(Optional.ofNullable(ex.getMessage()).orElse("Role not found"))
+                        .build()
+        );
+    }
+
 }

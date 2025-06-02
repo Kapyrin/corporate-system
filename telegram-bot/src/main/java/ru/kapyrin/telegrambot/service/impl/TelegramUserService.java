@@ -47,4 +47,10 @@ public class TelegramUserService implements UserRegistryService {
                 .distinct()
                 .toList();
     }
+
+    @Override
+    public boolean existsByTelegramId(Long telegramId) {
+        return repo.existsByTelegramId(telegramId);
+    }
+
 }

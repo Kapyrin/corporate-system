@@ -14,3 +14,6 @@ data:
   SPRING_RABBITMQ_EXCHANGE: worklog.exchange
   SPRING_RABBITMQ_ROUTING_KEY: telegram.event
   TIME_TRACKING_URL: http://time-tracking-service.time-tracking-ns.svc.cluster.local:8081
+  USER_SERVICE_URL: http://user-service.user-service-ns.svc.cluster.local:8080
+  NOTIFICATION_SERVICE_URL: http://notification-service.notification-ns.svc.cluster.local:8084
+

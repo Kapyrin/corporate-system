@@ -9,6 +9,8 @@ import java.util.List;
 public interface TelegramUserRepository extends JpaRepository<TelegramUser, Long> {
     boolean existsByUserIdAndTelegramId(Long userId, Long telegramId);
 
+    boolean existsByTelegramId(Long telegramId);
+
     List<TelegramUser> findAllByUserId(Long userId);
 
     List<TelegramUser> findAllByTelegramId(Long telegramId);

@@ -34,6 +34,10 @@ public class User {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id")
+    private Role role;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
