@@ -9,7 +9,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.kapyrin.telegrambot.config.TelegramBotProperties;
 import ru.kapyrin.telegrambot.service.command.BotCommandHandler;
 
-import ru.kapyrin.telegrambot.service.command.impl.SessionCommandHandler;
+
+import ru.kapyrin.telegrambot.service.command.SessionCommandHandler;
 import ru.kapyrin.telegrambot.state.UserSessionContext;
 
 import java.util.List;

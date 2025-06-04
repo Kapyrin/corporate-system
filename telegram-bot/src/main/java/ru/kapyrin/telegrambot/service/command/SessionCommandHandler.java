@@ -1,4 +1,4 @@
-package ru.kapyrin.telegrambot.service.command.impl;
+package ru.kapyrin.telegrambot.service.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
