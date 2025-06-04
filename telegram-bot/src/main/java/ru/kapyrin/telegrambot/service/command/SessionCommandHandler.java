@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.kapyrin.telegrambot.service.UserRegistrationService;
-import ru.kapyrin.telegrambot.service.command.BotCommandHandler;
 import ru.kapyrin.telegrambot.state.UserRegistrationSession;
 import ru.kapyrin.telegrambot.state.UserSessionContext;
 import ru.kapyrin.telegrambot.state.UserState;
@@ -12,17 +11,15 @@ import ru.kapyrin.telegrambot.state.UserState;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class SessionCommandHandler implements BotCommandHandler {
+public class SessionCommandHandler {
 
     private final UserSessionContext sessionContext;
     private final UserRegistrationService registrationService;
 
-    @Override
-    public boolean supports(String command, Long chatId) {
+    public boolean canHandle(Long chatId) {
         return sessionContext.hasSession(chatId);
     }
 
-    @Override
     public String handle(Long chatId, String message) {
         UserRegistrationSession session = sessionContext.getSession(chatId);
 

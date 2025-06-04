@@ -18,8 +18,8 @@ public class StartCommandHandler implements BotCommandHandler {
     private final UserSessionContext sessionContext;
 
     @Override
-    public boolean supports(String command, Long chatId) {
-        return "/start".equalsIgnoreCase(command);
+    public String command(){
+        return "/start";
     }
 
     @Override

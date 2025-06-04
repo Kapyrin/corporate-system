@@ -9,6 +9,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.kapyrin.telegrambot.config.TelegramBotProperties;
 import ru.kapyrin.telegrambot.service.command.BotCommandHandler;
 
+import ru.kapyrin.telegrambot.service.command.impl.SessionCommandHandler;
+import ru.kapyrin.telegrambot.state.UserSessionContext;
+
 import java.util.List;
 
 @Component
@@ -18,6 +21,8 @@ public class TelegramNotificationBot extends TelegramLongPollingBot {
 
     private final TelegramBotProperties config;
     private final List<BotCommandHandler> commandHandlers;
+    private final SessionCommandHandler sessionCommandHandler;
+    private final UserSessionContext sessionContext;
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -29,8 +34,15 @@ public class TelegramNotificationBot extends TelegramLongPollingBot {
         Long chatId = update.getMessage().getChatId();
 
         try {
+
+            if (sessionContext.hasSession(chatId)) {
+                String response = sessionCommandHandler.handle(chatId, message);
+                sendText(chatId, response);
+                return;
+            }
+
             for (BotCommandHandler handler : commandHandlers) {
-                if (handler.supports(message, chatId)) {
+                if (handler.command().equalsIgnoreCase(message)) {
                     String response = handler.handle(chatId, message);
                     sendText(chatId, response);
                     return;
@@ -38,6 +50,7 @@ public class TelegramNotificationBot extends TelegramLongPollingBot {
             }
 
             sendText(chatId, "Unknown command: " + message);
+
         } catch (Exception e) {
             log.error("Error processing command '{}': {}", message, e.getMessage(), e);
             sendText(chatId, "Error: " + e.getMessage());

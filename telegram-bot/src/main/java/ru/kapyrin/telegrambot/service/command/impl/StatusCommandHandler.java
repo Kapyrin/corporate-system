@@ -22,8 +22,8 @@ public class StatusCommandHandler implements BotCommandHandler {
     private final NotificationServiceClient notificationServiceClient;
 
     @Override
-    public boolean supports(String command, Long chatId) {
-        return "/status".equalsIgnoreCase(command);
+    public String command() {
+        return "/status";
     }
 
     @Override

@@ -1,9 +1,9 @@
-package ru.kapyrin.telegrambot.service.command;
+package ru.kapyrin.telegrambot.config;
 
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Bean;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -11,15 +11,15 @@ import ru.kapyrin.telegrambot.service.TelegramNotificationBot;
 
 import java.util.List;
 
-@Component
+@Configuration
 @RequiredArgsConstructor
 @Slf4j
-public class BotCommandRegistrar {
+public class TelegramCommandConfig {
 
     private final TelegramNotificationBot bot;
 
-    @PostConstruct
-    public void registerBotCommands() {
+    @Bean
+    public Boolean registerTelegramCommands() {
         List<BotCommand> commands = List.of(
                 new BotCommand("/start", "Register or check your status"),
                 new BotCommand("/status", "Show latest 3 notifications"),
@@ -33,5 +33,7 @@ public class BotCommandRegistrar {
         } catch (TelegramApiException e) {
             log.error("Failed to register bot commands", e);
         }
+
+        return true;
     }
 }

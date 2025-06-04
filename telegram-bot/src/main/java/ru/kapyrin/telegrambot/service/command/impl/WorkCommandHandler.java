@@ -21,8 +21,8 @@ public class WorkCommandHandler implements BotCommandHandler {
     private final TimeTrackingClient notificationClient;
 
     @Override
-    public boolean supports(String command, Long chatId) {
-        return "/work".equalsIgnoreCase(command);
+    public String command() {
+        return "/work";
     }
 
     @Override

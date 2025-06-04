@@ -20,8 +20,8 @@ public class ReportCommandHandler implements BotCommandHandler {
     private final TimeTrackingClient notificationClient;
 
     @Override
-    public boolean supports(String command, Long chatId) {
-        return "/report".equalsIgnoreCase(command);
+    public String command() {
+        return "/report";
     }
 
     @Override
